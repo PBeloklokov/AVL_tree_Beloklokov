@@ -1,14 +1,15 @@
 #include <iostream>
 #include <stdio.h>
 #include <string>
+
 using namespace std;
 
 struct element
 {
-    int number;
-    double height;
-    element* left;
-    element* right;
+int number;
+double height;
+element* left;
+element* right;
 };
 
 struct element* create_new_element(double new_number)
@@ -37,73 +38,73 @@ int balance_factor(element* el)
 
 void check(element* el)
 {
-	double hl = height(el->left);
-	double hr = height(el->right);
-	el->height = (hl>hr?hl:hr) + 1;
+    double hl = height(el->left);
+    double hr = height(el->right);
+    el->height = (hl>hr?hl:hr) + 1;
 }
 
 struct element* rightrotate(element* el_R)
 {
-	element* el_L = el_R->left;
-	el_R->left = el_L->right;
-	el_L->right = el_R;
-	check(el_R);
-	check(el_L);
-	return el_L;
+    element* el_L = el_R->left;
+    el_R->left = el_L->right;
+    el_L->right = el_R;
+    check(el_R);
+    check(el_L);
+    return el_L;
 }
 
 struct element* leftrotate(element* el_L)
 {
-	element* el_R = el_L->right;
-	el_L->right = el_R->left;
-	el_R->left = el_L;
-	check(el_L);
-	check(el_R);
-	return el_R;
+    element* el_R = el_L->right;
+    el_L->right = el_R->left;
+    el_R->left = el_L;
+    check(el_L);
+    check(el_R);
+    return el_R;
 }
 
 struct element* balance(element* el)
 {
-	check(el);
-	if(balance_factor(el)==2)
-	{
-		if( balance_factor(el->right) < 0 )
+    check(el);
+    if(balance_factor(el)==2)
+    {
+        if( balance_factor(el->right) < 0 )
         {
             el->right = rightrotate(el->right);
         }
         struct element* el0 = leftrotate(el);
-		return el0;
-	}
-	if( balance_factor(el)==-2 )
-	{
-		if( balance_factor(el->left) > 0  )
+        return el0;
+    }
+    if( balance_factor(el)==-2 )
+    {
+        if( balance_factor(el->left) > 0 )
         {
             el->left = leftrotate(el->left);
         }
         struct element* el2 = rightrotate(el);
-		return el2;
-	}
-	return el;
+        return el2;
+    }
+    return el;
 }
 
 struct element* paste(element* el, int n)
 {
-	if(!el)
+    if(!el)
     {
         struct element* el0 = create_new_element(n);
         cout << "create number = " << el0->number << endl;
         return el0;
     }
-	if(n < el->number)
+    if(n < el->number)
     {
         el->left = paste(el->left, n);
     }
-	else
+    else
     {
         el->right = paste(el->right, n);
     }
     struct element* el2 = balance(el);
-	return el2;
+    return el2;
 }
 
 
@@ -121,49 +122,49 @@ struct element* min_elem(element* el)
     {
         el0 = el;
     }
-	return el0;
+    return el0;
 }
 
 struct element* check_min(element* el)
 {
-	if(el->left == 0)
+    if(el->left == 0)
     {
         return el->right;
     }
-	el->left = check_min(el->left);
-	struct element* el0 = balance(el);
-	return el0;
+    el->left = check_min(el->left);
+    struct element* el0 = balance(el);
+    return el0;
 }
 
 struct element* delete_element(element* el, int n)
 {
-	if(!el) return NULL;
-	if(n < el->number)
+    if(!el) return NULL;
+    if(n < el->number)
     {
         el->left = delete_element(el->left, n);
     }
-	else if(n > el->number)
+    else if(n > el->number)
     {
         el->right = delete_element(el->right, n);
     }
-        else
+    else
+    {
+        struct element* el_L = el->left;
+        struct element* el_R = el->right;
+        cout << "delete number = " << el->number << endl;
+        delete el;
+        if(!el_R)
         {
-            struct element* el_L = el->left;
-            struct element* el_R = el->right;
-            cout << "delete number = " << el->number << endl;
-            delete el;
-            if(!el_R)
-            {
-                return el_L;
-            }
-            struct element* min = min_elem(el_R);
-            min->right = check_min(el_R);
-            min->left = el_L;
-            struct element* el0 = balance(min);
-            return el0;
+            return el_L;
         }
-	struct element* el0 = balance(el);
-	return el0;
+        struct element* min = min_elem(el_R);
+        min->right = check_min(el_R);
+        min->left = el_L;
+        struct element* el0 = balance(min);
+        return el0;
+    }
+    struct element* el0 = balance(el);
+    return el0;
 }
 
 void print_min(struct element* el)
@@ -175,7 +176,7 @@ void print_min(struct element* el)
     else
     {
         print_min(el->left);
-        cout << el->number << endl;
+        cout << "Number " << el->number << endl;
     }
     if(el->right)
     {
@@ -185,12 +186,12 @@ void print_min(struct element* el)
 
 struct element* create_tree(struct element* el)
 {
-    char flag;
+    double flag;
     int number;
     cin >> flag;
-    while (flag != 'q')
+    while (flag != 0.1)
     {
-        number = (int) flag - 48;
+        number = (int) flag;
         el = paste(el, number);
         cin >> flag;
     }
@@ -199,23 +200,107 @@ struct element* create_tree(struct element* el)
 
 struct element* delete_menu(element* el)
 {
-    char flag;
+    double flag;
     int number;
     cin >> flag;
-    while(flag != 'q')
-        {
-            number = (int) flag - 48;
-            el = delete_element(el, number);
-            cin >> flag;
-        }
+    while(flag != 0.1)
+    {
+        number = (int) flag;
+        el = delete_element(el, number);
+        cin >> flag;
+    }
     return el;
+}
+
+struct element* search(element* el, int n, int* count)
+{
+    *count = *count + 1;
+    struct element* el0;
+    if(!el) return NULL;
+    if(n < el->number)
+    {
+        el0 = search(el->left, n, count);
+    }
+        else if(n > el->number)
+        {
+            el0 = search(el->right, n, count);
+        }
+            else
+            {
+                el0 = el;
+            }
+    return el0;
+}
+
+struct element* search_menu(element* root)
+{
+    double flag;
+    string word;
+    struct element* el;
+    int n, count = 0, change_value;
+    int* count_uk = &count;
+    cin >> flag;
+    while(flag != 0.1)
+    {
+        n = (int) flag;
+        el = search(root, n, count_uk);
+        if(el)
+        {
+            cout << "There is an element " << el->number << " with a pointer " << el << endl;
+            cout << "Deep = " << count << endl;
+            if(el->left)
+            {
+                if(el->right)
+                {
+                    cout << "His brothers are left " << el->left->number << " and right " << el->right->number << endl;
+                }
+                else
+                {
+                    cout << "His brother is left " << el->left->number << " and right doesn't exist" << endl;
+                }
+            }
+            else
+            {
+                if(el->right)
+                {
+                    cout << "His brothers are left NULL"<< " and right " << el->right->number << endl;
+                }
+                else
+                {
+                    cout << "His brothers aren't exist" << endl;
+                }
+            }
+            cout << "If you want to change this element, please enter 'change' and then enter new value. In other cases enter something else" << endl;
+            cin >> word;
+            if(word == "change")
+            {
+                cin >> change_value;
+                root = delete_element(el, el->number);
+                root = paste(root, change_value);
+                change_value = 0;
+                cout << "OKAY" << endl << endl;
+            }
+            else
+            {
+                cout << endl;
+            }
+        }
+        else
+        {
+            cout << "There isn't element " << n << endl << endl;
+        }
+        cin >> flag;
+        count = 0;
+    }
+    return root;
 }
 
 void menu()
 {
     cout << endl << "//////" << endl;
-    cout << "If you want to paste or create elements, enter 'paste' and you can add elements until you enter 'q' and you will return to the menu." << endl;
-    cout << "if you want to delete elements, enter 'delete' and at the end press 'q'. Then menu." << endl;
+    cout << "If you want to paste or create elements, enter 'paste' and you can add elements until you enter '0.1' and you will return to the menu." << endl;
+    cout << "If you want to delete elements, enter 'delete' and at the end press '0.1'. Then menu." << endl;
+    cout << "If you want to search an element, enter 'search'. Then menu." << endl;
     cout << "If you want to display items from lower to higher, enter 'print'. Then menu." << endl;
     cout << "If you want to end the process, enter 'exit'" << endl;
     cout << "//////" << endl << endl;
@@ -223,7 +308,7 @@ void menu()
 
 int main()
 {
-    int N = 0, i = 0, number = 0;
+    int n = 0, i = 0, number = 0;
     struct element* el = NULL;
     string word;
     menu();
@@ -239,9 +324,17 @@ int main()
         else
         {
             if (word == "delete")
+            {
+                cout << "You can delete elements" << endl;
+                el = delete_menu(el);
+                menu();
+            }
+            else
+            {
+                if(word == "search")
                 {
-                    cout << "You can delete elements" << endl;
-                    el = delete_menu(el);
+                    cout << "You can search elements" << endl;
+                    el = search_menu(el);
                     menu();
                 }
                 else
@@ -260,11 +353,12 @@ int main()
                             menu();
                         }
                     }
-                    //else
-                    //{
-                    //   cout << "I don't understand" << endl;
-                    //}
                 }
+                //else
+                //{
+                // cout << "I don't understand" << endl;
+                //}
+            }
         }
         getline(cin, word);
     }
