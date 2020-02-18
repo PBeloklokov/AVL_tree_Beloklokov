@@ -15,13 +15,13 @@ class Container
         struct element* root;
     public:
     // Виртуальные методы, должны быть реализованы вашим контейнером
-        virtual void paste(int value) = 0;
+        virtual void insert(int value) = 0;
         virtual bool exists(int value) = 0;
-        virtual void delete_element(int value) = 0;
+        virtual void remove(int value) = 0;
 
     // И этот тоже, хотя к нему потом ещё вернёмся
         virtual void print() = 0;
-    
+
     // Виртуальный деструктор (пока просто поверьте, что он нужен)
         virtual ~Container() { };
 };
@@ -31,29 +31,43 @@ class tree: public Container
     public:
 
         struct element* take_root();
-        
+
         struct element* create_new_element(int new_number);
-        
+
+        //The block instruments for the following methods
         int height(element* el);
         int balance_factor(element* el);
         void check(element* el);
-        
+
+        //Rotates
         struct element* rightrotate(element* el_R);
         struct element* leftrotate(element* el_L);
         struct element* balance(element* el);
-        
-        struct element* paste(element* el, int n);
-        
+
+        //Curve insert,
+        //because initially insert worked by returning a pointer
+        //to the element being considered at the time,
+        //which is not required in the task
+        void insert(int n);
+        struct element* paste1(element* el, int n);
+
+        //Instruments
         struct element* min_elem(element* el);
         struct element* check_min(element* el);
-        
+
+        //Curve remove for the same reason
         struct element* delete_element(element* el, int n);
-        
-        void print_min(element* el);
-        
+        void remove(int n);
+
+        //--||--
+        void print1(element* el);
+        void print();
+
+        //--||--
+        struct element* search1(element* el, int n);
+        bool exists(int value);
+
         ~tree();
-    //private:
-        //struct element* root;
 };
 
 struct element* tree::take_root()
@@ -136,7 +150,7 @@ struct element* tree::balance(element* el)
     return el;
 }
 
-struct element* tree::paste(element* el, int n)
+struct element* tree::paste1(element* el, int n)
 {
     if(!el)
     {
@@ -147,16 +161,21 @@ struct element* tree::paste(element* el, int n)
     }
     if(n < el->number)
     {
-        el->left = paste(el->left, n);
+        el->left = paste1(el->left, n);
     }
     else
     {
-        el->right = paste(el->right, n);
+        el->right = paste1(el->right, n);
     }
     struct element* el2 = balance(el);
     root = el2;
     return el2;
 }
+
+void tree::insert(int n)
+{
+    struct element* el = paste1(root, n);
+};
 
 struct element* tree::min_elem(element* el)
 {
@@ -216,7 +235,12 @@ struct element* tree::delete_element(element* el, int n)
     return el0;
 }
 
-void tree::print_min(struct element* el)
+void tree::remove(int n)
+{
+    struct element* el = delete_element(root, n);
+};
+
+void tree::print1(struct element* el)
 {
     if(!el->left)
     {
@@ -224,14 +248,43 @@ void tree::print_min(struct element* el)
     }
     else
     {
-        print_min(el->left);
+        print1(el->left);
         cout << "Number " << el->number << endl;
     }
     if(el->right)
     {
-        print_min(el->right);
+        print1(el->right);
     }
 }
+
+void tree::print()
+{
+    print1(root);
+}
+
+struct element* tree::search1(element* el, int n)
+{
+    struct element* el0;
+    if(!el) return NULL;
+    if(n < el->number)
+    {
+        el0 = search1(el->left, n);
+    }
+        else if(n > el->number)
+        {
+            el0 = search1(el->right, n);
+        }
+            else
+            {
+                el0 = el;
+            }
+    return el0;
+}
+
+bool tree::exists(int n)
+{
+    return (search1(root, n))?true:false;
+};
 
 tree::~tree()
 {
