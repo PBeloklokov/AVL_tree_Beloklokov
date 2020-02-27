@@ -29,6 +29,12 @@ class Container
 class tree: public Container
 {
     public:
+        void insert(int n);
+        bool exists(int value);
+        void remove(int n);
+        void print();
+
+    protected:
 
         struct element* take_root();
 
@@ -48,7 +54,6 @@ class tree: public Container
         //because initially insert worked by returning a pointer
         //to the element being considered at the time,
         //which is not required in the task
-        void insert(int n);
         struct element* paste1(element* el, int n);
 
         //Instruments
@@ -57,15 +62,12 @@ class tree: public Container
 
         //Curve remove for the same reason
         struct element* delete_element(element* el, int n);
-        void remove(int n);
 
         //--||--
         void print1(element* el);
-        void print();
 
         //--||--
         struct element* search1(element* el, int n);
-        bool exists(int value);
 
         ~tree();
 };
