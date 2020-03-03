@@ -11,18 +11,16 @@ struct element
 
 class Container
 {
-protected:
-    struct element* root;
 public:
-    // Виртуальные методы, должны быть реализованы вашим контейнером
+    // Г‚ГЁГ°ГІГіГ Г«ГјГ­Г»ГҐ Г¬ГҐГІГ®Г¤Г», Г¤Г®Г«Г¦Г­Г» ГЎГ»ГІГј Г°ГҐГ Г«ГЁГ§Г®ГўГ Г­Г» ГўГ ГёГЁГ¬ ГЄГ®Г­ГІГҐГ©Г­ГҐГ°Г®Г¬
     virtual void insert(int value) = 0;
     virtual bool exists(int value) = 0;
     virtual void remove(int value) = 0;
 
-    // И этот тоже, хотя к нему потом ещё вернёмся
+    // Г€ ГЅГІГ®ГІ ГІГ®Г¦ГҐ, ГµГ®ГІГї ГЄ Г­ГҐГ¬Гі ГЇГ®ГІГ®Г¬ ГҐГ№Вё ГўГҐГ°Г­ВёГ¬Г±Гї
     virtual void print() = 0;
 
-    // Виртуальный деструктор (пока просто поверьте, что он нужен)
+    // Г‚ГЁГ°ГІГіГ Г«ГјГ­Г»Г© Г¤ГҐГ±ГІГ°ГіГЄГІГ®Г° (ГЇГ®ГЄГ  ГЇГ°Г®Г±ГІГ® ГЇГ®ГўГҐГ°ГјГІГҐ, Г·ГІГ® Г®Г­ Г­ГіГ¦ГҐГ­)
     virtual ~Container() { };
 };
 
@@ -70,6 +68,8 @@ protected:
     struct element* search1(element* el, int n);
 
     ~tree();
+    
+    struct element* root;
 };
 
 struct element* tree::take_root()
